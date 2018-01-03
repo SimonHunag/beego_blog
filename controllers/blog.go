@@ -48,7 +48,17 @@ func (c *BlogController) list()  {
 
 	if c.actionName == "home" {
 		query = query.Filter("is_top", 1)
+		c.Data["isHome"] = true
 	}
+
+	if c.actionName == "article" {
+		c.Data["isArticle"] = true
+	}else if c.actionName == "resource" {
+		c.Data["isResource"] = true
+	}else if c.actionName == "about" {
+		c.Data["isAbout"] = true
+	}
+
 	count, _ := query.Count()
 	c.Data["count"] = count
 	query.OrderBy( "-created").Limit(pagesize, offset).All(&list)
@@ -78,6 +88,7 @@ func (c *BlogController) Article() {
 详情
  */
 func (c *BlogController) Detail()  {
+	c.Data["isArticle"] = true
 	if id, _ := c.GetInt("id"); id != 0{
 		post := models.Post{Id:id}
 		c.o.Read(&post)
@@ -106,6 +117,7 @@ func (c *BlogController) About()  {
 	post := models.Post{Id:1}
 	c.o.Read(&post)
 	c.Data["post"] = post
+	c.Data["isAbout"] = true
 	c.TplName = c.controllerName + "/about.html"
 }
 
